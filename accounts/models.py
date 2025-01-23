@@ -16,7 +16,7 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
         BANNED = 'BANNED', 'Banned'
 
     email = models.EmailField(_("email address"), unique=True)
-    phone_number = models.CharField(max_length=15, blank=True, null=True, unique=True)
+    phone_number = models.CharField(max_length=15, unique=True)
     first_name = models.CharField(max_length=140)
     last_name = models.CharField(max_length=140)
     status = models.CharField(max_length=10, choices=Status.choices, default=Status.ACTIVE)
