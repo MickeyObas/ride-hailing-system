@@ -83,7 +83,7 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
 
-        # Do things after creating the user object
+        #TODO: Create Temp User? 
         token = PasswordResetTokenGenerator().make_token(user)
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         link = f"{settings.BACKEND_HOST}confirm-email/{uid}/{token}/"

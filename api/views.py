@@ -13,7 +13,9 @@ def register(request):
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        response = Response(serializer.data, status=status.HTTP_201_CREATED)
+        response.data['message'] = "We just sent a confirmation link. Please check your email."
+        return response
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
