@@ -1,11 +1,16 @@
 from rest_framework import serializers
 
 from django.core import exceptions
+from django.conf import settings
 from django.contrib.auth.password_validation import (
     validate_password
 )
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
 from .models import User
+from api.utils import send_confirmation_email
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -77,6 +82,14 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
+
         # Do things after creating the user object
+        token = PasswordResetTokenGenerator().make_token(user)
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        link = f"{settings.BACKEND_HOST}confirm-email/{uid}/{token}/"
+        
+        # Send link to email
+        send_confirmation_email(user, token, uid)
+
         return user
     
