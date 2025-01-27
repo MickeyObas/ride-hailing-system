@@ -17,9 +17,12 @@ from api.utils import send_confirmation_email
 class UserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField()
     phone_number = serializers.CharField(max_length=15)
+    type = serializers.CharField(max_length=6)
+
     class Meta:
         model = User
         fields = [
+            'id',
             'type',
             'email',
             'phone_number',
@@ -48,6 +51,11 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(errors)
 
         return super().validate(attrs)
+    
+    def validate_type(self, value):
+        if value not in ['RIDER', 'DRIVER']:
+            return serializers.ValidationError("Type must be either 'RIDER' or 'DRIVER'.")
+        return value
     
     def validate_first_name(self, value):
         if not value.strip().isalpha():
@@ -105,12 +113,6 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
         ]
-        extra_kwargs = {
-            'email': {'required': False},
-            'phone_number': {'required': False},
-            'first_name': {'required': False},
-            'last_name': {'required': False},
-        }
     
     def validate_email(self, value):
         email = value.strip().lower()
