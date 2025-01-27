@@ -7,7 +7,7 @@ import re
 
 def send_confirmation_email(user: User, token: str, uid: str):
     """
-    Send email with confirmaion link to user.
+    Send email with confirmation link to user.
     """
 
     confirmation_link =link = f"{settings.BACKEND_HOST}api/accounts/confirm-email/{uid}/{token}/"

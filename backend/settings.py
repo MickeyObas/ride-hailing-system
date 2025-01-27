@@ -5,9 +5,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# SITE_ID = 1
-# ACCOUNT_USER_MODEL_USERNAME_FIELD = 'email'
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -31,13 +28,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     
-    # 'rest_framework.authtoken',
-    # "allauth",
-    # "allauth.account",
-    # "allauth.socialaccount", 
-    # "dj_rest_auth",
-    # "dj_rest_auth.registration",
-    
     # Internal apps
     'accounts.apps.AccountsConfig',
     'administration.apps.AdministrationConfig',
@@ -45,6 +35,7 @@ INSTALLED_APPS = [
     'locations.apps.LocationsConfig',
     'notifications.apps.NotificationsConfig',
     'payments.apps.PaymentsConfig',
+    'profiles.apps.ProfilesConfig',
     'ratings.apps.RatingsConfig',
     'rides.apps.RidesConfig',
 ]
@@ -57,7 +48,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'allauth.account.middleware.AccountMiddleware'
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -153,7 +143,7 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
     ],
-    # "DEFAULT_AUTHENTICATION_CLASSES": [
-    #     "rest_framework.authentication.TokenAuthentication",
-    # ]
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ]
 }

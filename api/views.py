@@ -4,11 +4,12 @@ from rest_framework.decorators import (
 )
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import (
+    RefreshToken
+)
 
 from django.contrib.auth import (
     authenticate,
-    login as django_login,
-    logout as django_logout,
 )
 
 from accounts.serializers import UserSerializer
@@ -48,9 +49,17 @@ def login(request):
     user = authenticate(request, email=email, password=password)
 
     if user is not None:
-        django_login(request, user)
-        print("Logged In")
+        if not user.is_verified:
+            return Response({'error': 'Your account has not been verified. Please check your email address for more details.'})
+        
+        # Generate JWT
+        refresh = RefreshToken.for_user(user)
+
+        return Response({
+            "refresh": str(refresh),
+            "access": str(refresh.access_token)
+        })
+    
     else:
         return Response({'error': 'Invalid Credentials'})
     
-    return Response({'test': 'test'})

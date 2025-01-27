@@ -10,6 +10,7 @@ from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
 from .models import User
+
 from api.utils import send_confirmation_email
 
 
@@ -19,6 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
+            'type',
             'email',
             'phone_number',
             'first_name',
@@ -93,3 +95,52 @@ class UserSerializer(serializers.ModelSerializer):
 
         return user
     
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            'email',
+            'phone_number',
+            'first_name',
+            'last_name',
+        ]
+        extra_kwargs = {
+            'email': {'required': False},
+            'phone_number': {'required': False},
+            'first_name': {'required': False},
+            'last_name': {'required': False},
+        }
+    
+    def validate_email(self, value):
+        email = value.strip().lower()
+        if User.objects.filter(
+            email__iexact=email
+        ).exists():
+            raise serializers.ValidationError(f"An account with this email address already exists. Please use another one.")
+        else:
+            return email
+        
+    def validate_phone_number(self, value):
+        phone_number = value.strip()
+
+        for char in phone_number:
+            if char not in "0123456789":
+                raise serializers.ValidationError("Please enter a valid phone number.")
+
+        if User.objects.filter(
+            phone_number=phone_number
+        ).exists():
+            raise serializers.ValidationError(f"An account with this phone number already exists. Please use another one.")
+        else:
+            return phone_number
+        
+    def validate_first_name(self, value):
+        if not value.strip().isalpha():
+            raise serializers.ValidationError("Please enter a valid name. Names can only contain letters.")
+        return value.strip()
+    
+    def validate_last_name(self, value):
+        if not value.strip().isalpha():
+            raise serializers.ValidationError("Please enter a valid name. Names can only contain letters.")
+        return value.strip()
