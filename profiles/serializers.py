@@ -51,5 +51,6 @@ class DocumentSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
+        # Extra attributes
         document = Document.objects.create(**validated_data)
         return document
