@@ -2,7 +2,9 @@ from django.contrib import admin
 
 from . models import(
     Rider, 
-    Driver
+    Driver,
+    Document,
+    Vehicle
 )
 
 
@@ -19,5 +21,23 @@ class DriverAdmin(admin.ModelAdmin):
         'is_available'
     ]
 
+class DocumentAdmin(admin.ModelAdmin):
+    list_display = [
+        'driver',
+        'type',
+        'file',
+        'is_verified'
+    ]
+
+class VehicleAdmin(admin.ModelAdmin):
+    list_display = [
+        'driver',
+        'make',
+        'model',
+        'year'
+    ]
+
 admin.site.register(Rider, RiderAdmin)
 admin.site.register(Driver, DriverAdmin)
+admin.site.register(Document, DocumentAdmin)
+admin.site.register(Vehicle, VehicleAdmin)
