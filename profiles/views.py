@@ -44,3 +44,8 @@ def document_upload(request):
         return Response(serializer.data)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+@api_view(['PATCH'])
+def update_profile(request, pk):
+    pass
